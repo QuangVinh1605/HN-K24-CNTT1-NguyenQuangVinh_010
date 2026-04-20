@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Laptop</title>
+</head>
+<body>
+
+<h1>Quản lý Laptop</h1>
+
+<!-- Search -->
+<form th:action="@{/laptops}" method="get">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên hoặc hãng..."/>
+    <button type="submit">Tìm kiếm</button>
+    <a th:href="@{/laptops}">Xóa lọc</a>
+</form>
+
+<a th:href="@{/laptops/create}">+ Thêm Laptop</a>
+
+<hr/>
+
+<p th:if="${#lists.isEmpty(laptops)}">Kho hàng hiện đang trống.</p>
+
+<table border="1" cellpadding="8" cellspacing="0" th:if="${!#lists.isEmpty(laptops)}">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Ảnh</th>
+        <th>Tên Model</th>
+        <th>Hãng</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="laptop, stat : ${laptops}">
+        <td th:text="${stat.index + 1}"></td>
+        <td>
+            <img th:src="@{/uploads/{img}(img=${laptop.image})}"
+                 width="60" height="60"
+                 onerror="this.src='/hackathon/uploads/default.png'"
+                 alt="ảnh"/>
+        </td>
+        <td th:text="${laptop.modelName}"></td>
+        <td th:text="${laptop.brand}"></td>
+        <td th:text="${laptop.price} + ' đ'"></td>
+        <td th:text="${laptop.quantity}"></td>
+        <td>
+            <a th:href="@{/laptops/edit/{id}(id=${laptop.id})}">Sửa</a>
+            &nbsp;
+            <form th:action="@{/laptops/delete/{id}(id=${laptop.id})}" method="post"
+                  style="display:inline"
+                  onsubmit="return confirm('Xác nhận xóa?')">
+                <button type="submit">Xóa</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

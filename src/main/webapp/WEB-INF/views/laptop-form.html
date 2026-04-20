@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Cập nhật Laptop' : 'Thêm Laptop'"></title>
+    <style>
+        .error { color: red; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<h1 th:text="${isEdit} ? 'Cập nhật Laptop' : 'Thêm Laptop mới'"></h1>
+
+<a th:href="@{/laptops}">← Quay lại danh sách</a>
+
+<hr/>
+
+<form th:action="${isEdit} ? @{/laptops/edit/{id}(id=${laptop.id})} : @{/laptops/create}"
+      th:object="${laptop}"
+      method="post"
+      enctype="multipart/form-data">
+
+    <input th:if="${isEdit}" type="hidden" name="existingImage" th:value="${laptop.image}"/>
+
+    <table cellpadding="8">
+        <tr>
+            <td>Tên Model *</td>
+            <td>
+                <input type="text" th:field="*{modelName}" placeholder="MacBook Pro M3"/>
+                <br/>
+                <span class="error" th:if="${#fields.hasErrors('modelName')}"
+                      th:errors="*{modelName}"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Hãng *</td>
+            <td>
+                <input type="text" th:field="*{brand}" placeholder="Apple"/>
+                <br/>
+                <span class="error" th:if="${#fields.hasErrors('brand')}"
+                      th:errors="*{brand}"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Giá (đ) *</td>
+            <td>
+                <input type="number" th:field="*{price}" min="1" placeholder="25000000"/>
+                <br/>
+                <span class="error" th:if="${#fields.hasErrors('price')}"
+                      th:errors="*{price}"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Số lượng *</td>
+            <td>
+                <input type="number" th:field="*{quantity}" min="0" placeholder="0"/>
+                <br/>
+                <span class="error" th:if="${#fields.hasErrors('quantity')}"
+                      th:errors="*{quantity}"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Ảnh sản phẩm</td>
+            <td>
+                <!-- Hiển thị ảnh hiện tại khi edit -->
+                <div th:if="${isEdit and laptop.image != null}">
+                    <img th:src="@{/uploads/{img}(img=${laptop.image})}"
+                         width="80" height="80"
+                         onerror="this.src='/hackathon/uploads/default.png'"
+                         alt="Ảnh hiện tại"/>
+                    <p>Ảnh hiện tại (bỏ trống để giữ nguyên)</p>
+                </div>
+                <input type="file" name="imageFile" accept=".jpg,.jpeg,.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit" th:text="${isEdit} ? 'Cập nhật' : 'Lưu'"></button>
+            </td>
+        </tr>
+    </table>
+
+</form>
+
+</body>
+</html>
